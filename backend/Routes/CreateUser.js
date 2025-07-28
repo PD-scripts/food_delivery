@@ -3,6 +3,8 @@ const router = express.Router();
 const User = require("../models/user");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const jwtSecret = "Mynameisendtoendyoutubechannel$#"
 
 router.post(
   "/createuser",
@@ -66,8 +68,13 @@ router.post(
           .json({ error: "Try logging with correct credentials" });
       }
       console.log("login api hit", req.body);
-
-      return res.json({ success: true });
+      const data ={
+        user:{
+          id:userdata.id;
+        }
+      }
+      const authToken = jwt.sign(data , jwtSecret)
+      return res.json({ success: true ,authToken:authToken});
     } catch (error) {
       console.error(error);
       res.status(500).json({ success: false, error: error.message });
